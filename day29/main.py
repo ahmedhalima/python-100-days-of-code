@@ -2,6 +2,24 @@ from tkinter import messagebox
 from tkinter import *
 import secrets
 import string
+import json
+
+#----------------- Search website --------------------#
+def search_website():
+    website = website_input.get()
+    if website == '':
+        messagebox.showerror("Error", "Please fill in website field.")
+        return
+
+    with open('data.json', 'r') as data_file:
+        data = json.load(fp=data_file)
+
+        value = next((v for k, v in data.items() if k.lower() == website.lower()), None)
+        if value is not None:
+            messagebox.showinfo(f'{website.capitalize()}', f"Email:{value['email']}\nPassword: {value['password']}\n")
+        else:
+            messagebox.showerror("Error", f"No results for {website}")
+#----------------- Search website --------------------#
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def generate_password():
@@ -20,13 +38,26 @@ def save_form():
     if website == '' or email == '' or  password == '':
         messagebox.showerror("Error", "Please fill in all fields.")
     else:
-        text_to_be_saved = f"{website} | {email} | {password} \n"
-        with open('data.txt', 'a') as file:
-            file.write(text_to_be_saved)
-        website_input.delete(0, END)
-        # email_input.delete(0, END)
-        password_input.delete(0, END)
-        messagebox.showinfo('Success', 'Password Saved Successfully.')
+        new_data = {
+            website: {
+                'email': email,
+                'password': password
+            }
+        }
+        try:
+            with open('data.json', 'r') as data_file:
+                data = json.load(fp=data_file)
+        except FileNotFoundError:
+            with open('data.json', 'w') as data_file:
+                json.dump(new_data, data_file, indent=4)
+        else:
+            data.update(new_data)
+            with open('data.json', 'w') as data_file:
+                json.dump(data, data_file, indent=4)
+        finally:
+            website_input.delete(0, END)
+            password_input.delete(0, END)
+            messagebox.showinfo('Success', 'Password Saved Successfully.')
 # ---------------------------- UI SETUP ------------------------------- #
 
 window = Tk()
@@ -48,6 +79,9 @@ website_label.grid(column=0, row=1)
 website_input = Entry(width=35,)
 website_input.grid(column=1, row=1, columnspan=2)
 website_input.focus()
+
+website_search_btn = Button(text='Search', command=search_website)
+website_search_btn.grid(column=3, row=1,)
 # website section
 
 # Email/Username section
