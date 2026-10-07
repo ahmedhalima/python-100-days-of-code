@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 
 driver_options = webdriver.ChromeOptions()
 driver_options.add_experimental_option('detach', True)
-driver = webdriver.Chrome()
+driver = webdriver.Chrome(options=driver_options)
 url = "https://appbrewery.github.io/fake-newsletter-signup/"
 
 try:
