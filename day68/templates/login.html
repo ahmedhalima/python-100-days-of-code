@@ -1,0 +1,33 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="box">
+  <h1>Login</h1>
+<!-- Flash Message Block -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}  alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}  <form action="{{ url_for('login') }}" method="post">
+    <input type="text" name="email" placeholder="Email" required="required" />
+    <input
+      type="password"
+      name="password"
+      placeholder="Password"
+      required="required"
+    />
+    <button type="submit" class="btn btn-primary btn-block btn-large">
+      Let me in.
+    </button>
+  </form>
+</div>
+
+{% endblock %}
